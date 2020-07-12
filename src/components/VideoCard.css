@@ -1,0 +1,36 @@
+
+
+.ms-DocumentCard.VideoCard{
+  user-select: auto;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  min-width: 0px;
+}
+
+.ms-DocumentCard.VideoCard .videoInfo span{
+  font-size: 80%;
+}
+
+.ms-DocumentCard.VideoCard .videoInfo p{
+  margin:0px;
+}
+
+.ms-DocumentCard.VideoCard .playButton{
+  position: absolute;
+  bottom: -1px;
+  right: -4px;
+}
+
+.ms-DocumentCard.VideoCard .ms-Button-icon{
+  font-size: 150%;
+}
+
+.ms-DocumentCard.VideoCard .content{
+  margin: 8px;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+}
+
+.ms-DocumentCard.VideoCard .title{
+  font-weight: bold;
+  font-size: 100%;
+  margin: 0px;
+}
