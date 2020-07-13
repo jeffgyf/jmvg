@@ -58,22 +58,4 @@ export default class VideoCard extends React.PureComponent {
     );
   }
 
-  async postJoinEventAsync(eventId){
-    console.log(eventId);
-    let username=await CookieCheck.UserNamePromise;
-    let data={
-      eventId:eventId,
-      username:username
-    };
-    try{
-      let resp=await $.post(config.BackEndAPIUrl+"/joinevent", JSON.stringify(data));
-      alert("join success");
-      console.log(resp);
-      this.props.refreshJoinedHandler();
-    }
-    catch(error){
-      alert("join failed");
-      console.log(error);
-    }
-  }
 }

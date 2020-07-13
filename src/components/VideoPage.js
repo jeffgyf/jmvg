@@ -1,4 +1,5 @@
 import * as React from 'react';
+import UploadVideoButton from './UploadVideoButton'
 import VideoWall from './VideoWall'
 import VideoPlayer from './VideoPlayer'
 import './VideoPage.css';
@@ -41,8 +42,11 @@ export default class VideoPage extends React.Component {
         return (
           <div className="VideoPage">
               <div className="Title">J.M.V.G</div>
+              <div className="Body">
+                <UploadVideoButton/>
+                <VideoWall videos={this.state.videoWallList} playVideoFunc={v=>this.playVideo(v)}/>
+              </div>
               <VideoPlayer showPlayer={this.state.showVideoPlayer} videoSrc={this.state.videoSrc} closePlayer={()=>this.closeVideoPlayer()}/>
-              <VideoWall videos={this.state.videoWallList} playVideoFunc={v=>this.playVideo(v)}/>
           </div>
         );
     }

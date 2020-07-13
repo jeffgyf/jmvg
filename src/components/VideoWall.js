@@ -24,7 +24,7 @@ export default class VideoWall extends React.Component{
     return (
      
       <div className="VideoWall"> 
-        <SimpleBar className="SimpleBar" style={{ width: colNum*(EventCard.Width+19)+'px' }}>
+        <SimpleBar className="SimpleBar" style={{ width: colNum*(EventCard.Width+20)+'px' }}>
           <table>
             {videoRows.map(i=>
               <tr> {i.map(k=>

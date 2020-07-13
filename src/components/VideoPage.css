@@ -1,5 +1,14 @@
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
 .VideoPage{
     font-family: sans-serif;
+    height: 100%;
+    width: 100%;
+    
   }
 
 .VideoPage .Title{
@@ -7,13 +16,21 @@
     color: white;
     font-size: 32px;
     text-align: right;
-    height: 80px;
-    padding: 10px;
-    margin: -10px;
-    margin-bottom: 0px;
+    height: 8vh;
+    padding: 5px;
 }
+
+.VideoPage .Body{
+  flex-grow : 1;
+}
+
 .VideoPage .VideoWall{
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0%);
+  margin: auto;
+  width: 865px;
+  height: 91vh;
+}
+
+.VideoPage .UploadButton{
+  float: right;
+  font-size: 150%;
 }

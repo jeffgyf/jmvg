@@ -6,12 +6,8 @@
   border-left-width:12px;
 }
 
-.VideoWall{
-  height: 97%; 
-  position: absolute;
-  background-color: #f3f2f1;
-}
 
 .VideoWall .SimpleBar{
   height: 100%;
+  background-color: #f3f2f1;
 }
