@@ -1,0 +1,19 @@
+.VideoPage{
+    font-family: sans-serif;
+  }
+
+.VideoPage .Title{
+    background-color: #2C79D0;
+    color: white;
+    font-size: 32px;
+    text-align: right;
+    height: 80px;
+    padding: 10px;
+    margin: -10px;
+    margin-bottom: 0px;
+}
+.VideoPage .VideoWall{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}

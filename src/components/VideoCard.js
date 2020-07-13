@@ -9,34 +9,42 @@ import { ImageFit } from 'office-ui-fabric-react/lib/Image';
 import $ from 'jquery';
 import config from '../config';
 import CookieCheck from './CookieCheck';
+import sampleCover from '../sampleCover.png';
 var logo="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31";
 
 
 
-
+/* Parameters
+  title="Title" 
+  videoInfo=""
+  coverImg={soccer}
+  tags={null}
+  videoId="123"
+  videoPath=""
+  playVideoFunc={null}*/
 export default class VideoCard extends React.PureComponent {
   static Width=200;
   render() {
     const previewProps= {
       previewImages: [{
-          previewImageSrc: `./soccer.png`,
-          imageFit: ImageFit.cover,
+          previewImageSrc: this.props.coverImg ? this.props.coverImg : sampleCover,
+          imageFit: ImageFit.centerContain,
           width: VideoCard.Width,
-          height: 120
+          height: 200
         }
       ]
     };
     return (
       <DocumentCard className="VideoCard" style={{ width: VideoCard.Width+'px' }}>
-        {this.props.img ? <DocumentCardPreview {...previewProps}/>:null}
+        <DocumentCardPreview {...previewProps} />
         <div className="content">
           <p className="title">{this.props.title}</p>
             <div className="videoInfo">
-              {Object.keys(this.props.videoInfo).map(i=> <p><Text>{this.props.videoInfo[i]}</Text></p>)}
-              {this.props.interests? <p>{this.props.interests.reduce((s, i)=> s+";"+i)}</p>:null}
+              {this.props.videoInfo? Object.keys(this.props.videoInfo).map(i=> <p><Text>{this.props.videoInfo[i]}</Text></p>):null}
+              {this.props.tags? <p>{this.props.tags.reduce((s, i)=> s+";"+i)}</p>:null}
             </div>
-            <div className="playButton" hidden={this.props.img==null}>
-              <ActionButton data-automation-id="test" iconProps={{ iconName: 'Play' }} onClick={()=>{this.eventJoinHandler()}}>
+            <div className="playButton" hidden={false}>
+              <ActionButton data-automation-id="test" iconProps={{ iconName: 'Play' }} onClick={()=>{this.props.playVideoFunc()}}>
               </ActionButton>
             </div>
         </div>
@@ -48,10 +56,6 @@ export default class VideoCard extends React.PureComponent {
 
       </DocumentCard>
     );
-  }
-
-  eventJoinHandler(){
-    this.postJoinEventAsync(this.props.eventId);
   }
 
   async postJoinEventAsync(eventId){
