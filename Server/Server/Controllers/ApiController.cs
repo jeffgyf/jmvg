@@ -4,20 +4,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Server.Models;
 
 namespace Server.Controllers
 {
-    public class Foo
-    {
-        public int A { get; set; }
-        public string B { get; set; }
-        public Dictionary<string, string> D { get; set; } = new Dictionary<string, string>();
-    }
     public class ApiController : Controller
     {
+        private readonly string sqlUsername;
+        private readonly string sqlPassword;
+
+        public ApiController(IConfiguration config)
+        {
+            sqlUsername = config["Database:Username"];
+            sqlPassword = config["Database:Password"];
+            if (sqlUsername == null || sqlPassword == null)
+            {
+                throw new Exception("failed to read username or/and password from config");
+            }
+        }
+
         [Route("")]
         [HttpGet]
         public IActionResult HomePage()
@@ -30,14 +41,24 @@ namespace Server.Controllers
         [Produces("application/json")]
         public IActionResult GetVideoList()
         {
+            var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
+            
+            return Content(JsonConvert.SerializeObject(dbContext.Videos), "application/json");
+        }
+
+        [Route("api/test")]
+        [HttpGet]
+        [Produces("application/json")]
+        public IActionResult Test()
+        {
             var sampleVideo = new Video
             {
-                Title="Become Wind",
-                CoverImg= $"https://{HttpContext.Request.Host}/image/SampleCover.png",
+                Title = "Become Wind",
+                CoverImg = $"https://{HttpContext.Request.Host}/image/SampleCover.png",
                 VideoPath = $"https://{HttpContext.Request.Host}/video/become_wind.mp4",
-                VideoId =123
+                VideoId = 123
             };
-            return Content(JsonConvert.SerializeObject(new [] { sampleVideo }), "application/json");
+            return Content(JsonConvert.SerializeObject(sampleVideo), "application/json");
         }
     }
 }
