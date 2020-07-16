@@ -4,15 +4,15 @@ import VideoWall from './VideoWall'
 import VideoPlayer from './VideoPlayer'
 import './VideoPage.css';
 import sampleCover from '../sampleCover.png';
-import sampleVideoPath from '../become_wind.mp4';
+import sampleVideoPath from '../sampleVideo.mp4';
 import $ from 'jquery';
-import config from '../config';
+import config from "../config.json"
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 let sampleVideo={
-  Title:"Title",
+  Title:"Sample",
   VideoInfo:null,
   CoverImg:sampleCover,
   Tags:null,
@@ -61,17 +61,19 @@ export default class VideoPage extends React.Component {
 
     async getVideoListAsync(){
       try{
+        if(config.localDebug){
+          return sampleVideos
+        }
+        let videos=await $.get(config.serverUrl+"/api/getVideoList");
+        console.log("videos");
+        console.log(videos);
         
-        //let parsedEvents=await $.get(config.BackEndAPIUrl+"/getjoinedevents?username="+userName);
-        //console.log("parsedEvent");
-        //console.log(parsedEvents);
-        
-        return sampleVideos;
+        return videos;
       }
       catch(error){
-        alert("failed to get video list")
+        alert("failed to get video list, show samples instead")
         console.log(error);
-        return [];
+        return sampleVideos;
       }
     }
 

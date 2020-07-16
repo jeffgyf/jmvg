@@ -8,8 +8,6 @@ import './UploadVideoButton.css';
 import { ImageFit } from 'office-ui-fabric-react/lib/Image';
 import $ from 'jquery';
 import config from '../config';
-import CookieCheck from './CookieCheck';
-import sampleCover from '../sampleCover.png';
 var logo="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31";
 
 

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import EventCard from './EventCard'
 import './VideoWall.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
@@ -24,20 +23,22 @@ export default class VideoWall extends React.Component{
     return (
      
       <div className="VideoWall"> 
-        <SimpleBar className="SimpleBar" style={{ width: colNum*(EventCard.Width+20)+'px' }}>
+        <SimpleBar className="SimpleBar" style={{ width: colNum*(VideoCard.Width+20)+'px' }}>
           <table>
-            {videoRows.map(i=>
-              <tr> {i.map(k=>
-                <td className="VideoEntry">
-                    <VideoCard 
-                      title={k.Title} 
-                      videoInfo={k.VideoInfo} 
-                      coverImg={k.CoverImg} 
-                      tags={k.Tags} 
-                      videoId={k.VideoId} 
-                      playVideoFunc={()=>this.props.playVideoFunc(k.VideoPath)}/>
-                </td>)}
-              </tr>)}
+            <tbody>
+              {videoRows.map(i=>
+                <tr>{i.map(k=>
+                  <td className="VideoEntry">
+                      <VideoCard 
+                        title={k.Title} 
+                        videoInfo={k.VideoInfo} 
+                        coverImg={k.CoverImg} 
+                        tags={k.Tags} 
+                        videoId={k.VideoId} 
+                        playVideoFunc={()=>this.props.playVideoFunc(k.VideoPath)}/>
+                  </td>)}
+                </tr>)}
+              </tbody>
           </table>
         </SimpleBar>
       </div>

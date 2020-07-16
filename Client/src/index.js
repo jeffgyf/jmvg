@@ -1,17 +1,12 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import EventCard from './components/EventCard'
 import VideoCard from './components/VideoCard'
-import EventPage from './components/EventPage'
 import VideoWall from './components/VideoWall'
 import VideoPage from './components/VideoPage'
-import ProfilePage from './components/ProfilePage'
-import soccer from './soccer.png';
 import sampleCover from './sampleCover.png';
-import sampleVideoPath from './become_wind.mp4';
+import sampleVideoPath from './sampleVideo.mp4';
 import {initializeIcons} from 'office-ui-fabric-react';
 import { BrowserRouter as Router, Route, Link, HashRouter, withRouter  } from "react-router-dom";
-import InterestEventPicker from './components/InterestEventPicker'
 import $ from 'jquery';
 import VideoPlayer from './components/VideoPlayer';
 class IndexPage extends React.Component{
@@ -22,10 +17,7 @@ class IndexPage extends React.Component{
   render(){
     return (
     <div>
-      <a href="?route=eventPage">{"eventPage"}</a>
-      <br/>
-      <a href="?route=profilePage">{"ProfilePage"}</a>
-      <br/>
+      <p>JMVG Debugging page</p>
       <a href="?route=videoCard">{"VideoCard"}</a>
       <br/>
       <a href="?route=videoPlayer">{"VideoPlayer"}</a>
@@ -33,15 +25,6 @@ class IndexPage extends React.Component{
       <a href="?route=videoWall">{"ViedoWall"}</a>
       <br/>
       <a href="?route=videoPage">{"ViedoPage"}</a>
-      <p>{"cookie string: "+ this.state.cookie}</p>
-      <button onClick={()=> {
-        document.cookie="hello"+(new Date()).getTime();
-        this.setState({cookie: document.cookie});
-      }}>{"test cookie"}</button>
-      <button onClick={()=>{
-        document.cookie = "username=<logged_out>";
-        this.setState({cookie:document.cookie});
-      }}>{"log out"}</button>
     </div>);
   }
 }
@@ -61,20 +44,18 @@ let sampleVideo={
   playVideoFunc:null
 };
 let routeDict={
-  "eventPage":<EventPage/>,
   "home":<IndexPage/>,
   "videoCard": <VideoCard 
     title="Title" 
     videoInfo=""
-    img={soccer}
+    img={sampleCover}
     tag={null}
     videoId="123"
-    videoPath=""
+    videoPath={sampleVideo}
     playVideoFunc={null}/>,
-  "videoPlayer": <VideoPlayer showPlayer={true}/>,
+  "videoPlayer": <VideoPlayer showPlayer={true} videoSrc={sampleVideoPath}/>,
   "videoWall": <VideoWall videos={[...Array(10).keys()].map(i=> sampleVideo)}/>,
   "videoPage": <VideoPage/>,
-  "profilePage":<ProfilePage/>
 }
 //const eventList=[...Array(15).keys()].map(i=>({title:"test"+i, eventInfo:eventInfoSample, img:soccer}));
 //const InterestList=["Tag1", "Tag2", "Tag3"]
