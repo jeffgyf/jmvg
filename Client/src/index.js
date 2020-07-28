@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import VideoCard from './components/VideoCard'
 import VideoWall from './components/VideoWall'
 import VideoPage from './components/VideoPage'
-import sampleCover from './sampleCover.png';
+import sampleCover from './sampleCover.jpg';
 import sampleVideoPath from './sampleVideo.mp4';
 import {initializeIcons} from 'office-ui-fabric-react';
 import { BrowserRouter as Router, Route, Link, HashRouter, withRouter  } from "react-router-dom";

@@ -8,7 +8,7 @@ import './VideoCard.css';
 import { ImageFit } from 'office-ui-fabric-react/lib/Image';
 import $ from 'jquery';
 import config from '../config';
-import sampleCover from '../sampleCover.png';
+import sampleCover from '../sampleCover.jpg';
 var logo="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31";
 
 

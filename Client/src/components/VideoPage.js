@@ -3,7 +3,7 @@ import UploadVideoButton from './UploadVideoButton'
 import VideoWall from './VideoWall'
 import VideoPlayer from './VideoPlayer'
 import './VideoPage.css';
-import sampleCover from '../sampleCover.png';
+import sampleCover from '../sampleCover.jpg';
 import sampleVideoPath from '../sampleVideo.mp4';
 import $ from 'jquery';
 import config from "../config.json"
