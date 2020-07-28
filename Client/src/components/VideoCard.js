@@ -22,21 +22,22 @@ var logo="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFi
   videoPath=""
   playVideoFunc={null}*/
 export default class VideoCard extends React.PureComponent {
-  static Width=200;
+  static Width=350;
+  static ImageSize=100;
   render() {
     const previewProps= {
       previewImages: [{
           previewImageSrc: this.props.coverImg ? this.props.coverImg : sampleCover,
           imageFit: ImageFit.centerContain,
-          width: VideoCard.Width,
-          height: 200
+          width: VideoCard.ImageSize,
+          height: VideoCard.ImageSize
         }
       ]
     };
     return (
-      <DocumentCard className="VideoCard" style={{ width: VideoCard.Width+'px' }}>
-        <DocumentCardPreview {...previewProps} />
-        <div className="content">
+      <DocumentCard className="VideoCard" style={{ width: VideoCard.Width+'px' , height: VideoCard.ImageSize+'px'}}>
+        <div className="cardImage"><DocumentCardPreview {...previewProps} /></div>
+        <div className="cardContent">
           <p className="title">{this.props.title}</p>
             <div className="videoInfo">
               {this.props.videoInfo? Object.keys(this.props.videoInfo).map(i=> <p><Text>{this.props.videoInfo[i]}</Text></p>):null}

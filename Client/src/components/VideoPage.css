@@ -3,12 +3,12 @@ body {
   width: 100%;
   margin: 0;
   overflow: hidden;
+  background-color: #f8f8f8;
 }
 .VideoPage{
     font-family: sans-serif;
     height: 100%;
     width: 100%;
-    
   }
 
 .VideoPage .Title{
@@ -26,7 +26,9 @@ body {
 
 .VideoPage .VideoWall{
   margin: auto;
-  width: 865px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
   height: 91vh;
 }
 

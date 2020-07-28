@@ -47,14 +47,14 @@ let routeDict={
   "home":<IndexPage/>,
   "videoCard": <VideoCard 
     title="Title" 
-    videoInfo=""
+    videoInfo={["Composer: Ayano Tsuji", `From "The Cat Returns"`, "Violin"]}
     img={sampleCover}
     tag={null}
     videoId="123"
     videoPath={sampleVideo}
     playVideoFunc={null}/>,
   "videoPlayer": <VideoPlayer showPlayer={true} videoSrc={sampleVideoPath}/>,
-  "videoWall": <VideoWall videos={[...Array(10).keys()].map(i=> sampleVideo)}/>,
+  "videoWall": <VideoWall colNum={2} videos={[...Array(10).keys()].map(i=> sampleVideo)}/>,
   "videoPage": <VideoPage/>,
 }
 //const eventList=[...Array(15).keys()].map(i=>({title:"test"+i, eventInfo:eventInfoSample, img:soccer}));

@@ -23,59 +23,77 @@ const sampleVideos=[...Array(10).keys()].map(i=> sampleVideo);
 
 
 export default class VideoPage extends React.Component {
-    constructor(props){
-      super(props);
-      
-      this.state={
-        videoWallList:[],
-        showVideoPlayer:false,
-        videoSrc:""
-      };
-      this.refreshVideoList();
-    }
-
-    refreshVideoList(){
-      this.getVideoListAsync().then(d=>this.setState({videoWallList:d}));
-    }
+  static windowWidthThreshold = 860;
+  constructor(props){
+    super(props);
     
-    render() {
-        return (
-          <div className="VideoPage">
-              <div className="Title">J.M.V.G</div>
-              <div className="Body">
-                <UploadVideoButton/>
-                <VideoWall videos={this.state.videoWallList} playVideoFunc={v=>this.playVideo(v)}/>
-              </div>
-              <VideoPlayer showPlayer={this.state.showVideoPlayer} videoSrc={this.state.videoSrc} closePlayer={()=>this.closeVideoPlayer()}/>
-          </div>
-        );
+    this.state={
+      videoWallList:[],
+      showVideoPlayer:false,
+      videoSrc:"",
+      videoWallColNum:2
+    };
+    if(window.innerWidth<=VideoPage.windowWidthThreshold){
+      this.state.videoWallColNum=1;
     }
+    this.refreshVideoList();
+    window.addEventListener('resize', ()=>this.onPageResize());
+  }
 
-    playVideo(videoSrc){
-      this.setState({videoSrc:videoSrc, showVideoPlayer:true});
-    }
+  refreshVideoList(){
+    this.getVideoListAsync().then(d=>this.setState({videoWallList:d}));
+  }
+  
+  render() {
+      return (
+        <div className="VideoPage">
+            <div className="Title">J.M.V.G</div>
+            <div className="Body">
+              <UploadVideoButton/>
+              <VideoWall videos={this.state.videoWallList} playVideoFunc={v=>this.playVideo(v)} colNum={this.state.videoWallColNum}/>
+            </div>
+            <VideoPlayer showPlayer={this.state.showVideoPlayer} videoSrc={this.state.videoSrc} closePlayer={()=>this.closeVideoPlayer()}/>
+        </div>
+      );
+  }
 
-    closeVideoPlayer(){
-      this.setState({showVideoPlayer:false});
-    }
+  playVideo(videoSrc){
+    this.setState({videoSrc:videoSrc, showVideoPlayer:true});
+  }
 
-    async getVideoListAsync(){
-      try{
-        if(config.localDebug){
-          return sampleVideos
-        }
-        let videos=await $.get(config.serverUrl+"/api/getVideoList");
-        console.log("videos");
-        console.log(videos);
-        
-        return videos;
+  closeVideoPlayer(){
+    this.setState({showVideoPlayer:false});
+  }
+
+  onPageResize(){
+    if(window.innerWidth<=VideoPage.windowWidthThreshold){
+      if(this.state.videoWallColNum>1){
+        this.setState({videoWallColNum:1});
       }
-      catch(error){
-        alert("failed to get video list, show samples instead")
-        console.log(error);
-        return sampleVideos;
-      }
     }
+    else if(this.state.videoWallColNum==1){
+      this.setState({videoWallColNum:2});
+    }
+  }
+
+  async getVideoListAsync(){
+    const videoNumPerRequest = 10;
+    try{
+      if(config.localDebug){
+        return sampleVideos
+      }
+      let videos=await $.get(config.serverUrl+`/api/getVideoList?start=1&count=${videoNumPerRequest}`);
+      console.log("videos");
+      console.log(videos);
+      
+      return videos;
+    }
+    catch(error){
+      alert("failed to get video list, show samples instead")
+      console.log(error);
+      return sampleVideos;
+    }
+  }
 
 
 

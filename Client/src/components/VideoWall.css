@@ -5,9 +5,8 @@
   border-right-width: 0px;
   border-left-width:12px;
 }
-
-
-.VideoWall .SimpleBar{
-  height: 100%;
+.VideoWall{
   background-color: #f3f2f1;
+  padding: 10px;
 }
+

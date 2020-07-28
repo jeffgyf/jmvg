@@ -17,13 +17,13 @@ export default class VideoWall extends React.Component{
     };
   }
   render(){
-    const colNum=4;
+    var colNum=this.props.colNum;
     const videoRows=((n, a)=>[...Array(Math.floor((a.length+n-1)/n)).keys()].map(i=>a.slice(i*n, (i+1)*n)))(colNum, this.props.videos);
     console.log(videoRows);
     return (
      
       <div className="VideoWall"> 
-        <SimpleBar className="SimpleBar" style={{ width: colNum*(VideoCard.Width+20)+'px' }}>
+        <SimpleBar className="SimpleBar" style={{ width: colNum*(VideoCard.Width+25)+'px' }}>
           <table>
             <tbody>
               {videoRows.map(i=>

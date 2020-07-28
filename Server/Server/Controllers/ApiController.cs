@@ -39,11 +39,12 @@ namespace Server.Controllers
         [Route("api/getVideoList")]
         [HttpGet]
         [Produces("application/json")]
-        public IActionResult GetVideoList()
+        public IActionResult GetVideoList(int start, int count)
         {
             var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
-            
-            return Content(JsonConvert.SerializeObject(dbContext.Videos), "application/json");
+            var videos = dbContext.Videos.FromSqlRaw($"SELECT TOP({count}) * FROM [Video] WHERE VideoId >={start}");
+
+            return Content(JsonConvert.SerializeObject(videos), "application/json");
         }
 
         [Route("api/test")]
