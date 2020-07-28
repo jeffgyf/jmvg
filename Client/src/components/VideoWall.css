@@ -8,5 +8,11 @@
 .VideoWall{
   background-color: #f3f2f1;
   padding: 10px;
+  padding-right: 0px;
 }
+
+.VideoWall .SimpleBar{
+  height: 100%;
+}
+
 

@@ -35,7 +35,7 @@ export default class VideoCard extends React.PureComponent {
       ]
     };
     return (
-      <DocumentCard className="VideoCard" style={{ width: VideoCard.Width+'px' , height: VideoCard.ImageSize+'px'}}>
+      <DocumentCard className="VideoCard" style={{ width: VideoCard.Width+'px' , height: VideoCard.ImageSize+2+'px'}}>
         <div className="cardImage"><DocumentCardPreview {...previewProps} /></div>
         <div className="cardContent">
           <p className="title">{this.props.title}</p>

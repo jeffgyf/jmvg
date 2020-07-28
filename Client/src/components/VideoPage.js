@@ -77,7 +77,7 @@ export default class VideoPage extends React.Component {
   }
 
   async getVideoListAsync(){
-    const videoNumPerRequest = 10;
+    const videoNumPerRequest = 20;
     try{
       if(config.localDebug){
         return sampleVideos

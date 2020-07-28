@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import './VideoWall.css';
-import SimpleBar from 'simplebar-react';
+import SimpleBar from 'simplebar-react'; //https://github.com/Grsmto/simplebar/tree/master/packages/simplebar-react
 import 'simplebar/dist/simplebar.min.css';
 import VideoCard from './VideoCard';
 
@@ -23,7 +23,7 @@ export default class VideoWall extends React.Component{
     return (
      
       <div className="VideoWall"> 
-        <SimpleBar className="SimpleBar" style={{ width: colNum*(VideoCard.Width+25)+'px' }}>
+        <SimpleBar className="SimpleBar" style={{ width: colNum*(VideoCard.Width+25)+15+'px' }}>
           <table>
             <tbody>
               {videoRows.map(i=>
