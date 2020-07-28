@@ -39,12 +39,17 @@ namespace Server.Controllers
         [Route("api/getVideoList")]
         [HttpGet]
         [Produces("application/json")]
-        public IActionResult GetVideoList(int start, int count)
+        public async Task<IActionResult> GetVideoList(int start, int count)
         {
+            const int failurePct = 10;
+            if (new Random().NextDouble() <= (0.01*failurePct))
+            {
+                throw new Exception($"Random {failurePct}% failure");
+            }
             var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
             var videos = dbContext.Videos.FromSqlRaw($"SELECT TOP({count}) * FROM [Video] WHERE VideoId >={start}");
 
-            return Content(JsonConvert.SerializeObject(videos), "application/json");
+            return Content(JsonConvert.SerializeObject(await videos.ToListAsync()), "application/json");
         }
 
         [Route("api/test")]

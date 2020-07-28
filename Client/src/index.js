@@ -54,7 +54,7 @@ let routeDict={
     videoPath={sampleVideo}
     playVideoFunc={null}/>,
   "videoPlayer": <VideoPlayer showPlayer={true} videoSrc={sampleVideoPath}/>,
-  "videoWall": <VideoWall colNum={2} videos={[...Array(10).keys()].map(i=> sampleVideo)}/>,
+  "videoWall": <VideoWall colNum={2} videos={[...Array(20).keys()].map(i=> sampleVideo)}/>,
   "videoPage": <VideoPage/>,
 }
 //const eventList=[...Array(15).keys()].map(i=>({title:"test"+i, eventInfo:eventInfoSample, img:soccer}));

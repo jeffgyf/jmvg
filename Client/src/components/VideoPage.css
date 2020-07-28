@@ -16,7 +16,7 @@ body {
     color: white;
     font-size: 32px;
     text-align: right;
-    height: 8vh;
+    height: 60px;
     padding: 5px;
 }
 
@@ -29,7 +29,8 @@ body {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0%);
-  height: 91vh;
+  top:70px;
+  bottom: -10px;
 }
 
 .VideoPage .UploadButton{
