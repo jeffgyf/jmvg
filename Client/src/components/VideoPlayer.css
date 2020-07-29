@@ -1,3 +1,12 @@
 .VideoPlayer .ms-Dialog-main{
   width: 80%;
 }
+
+.VideoPlayer .ms-Dialog-inner{
+  padding: unset;
+}
+
+.VideoPlayer .ms-Dialog-title{
+  min-height: unset;
+  padding: unset;
+}

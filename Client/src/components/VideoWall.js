@@ -51,10 +51,10 @@ export default class VideoWall extends React.Component{
                       <VideoCard 
                         title={k.Title} 
                         videoInfo={k.VideoInfo} 
-                        coverImg={k.CoverImg} 
+                        coverImg={config.mediaStorageDomain+k.CoverImg} 
                         tags={k.Tags} 
                         videoId={k.VideoId} 
-                        playVideoFunc={()=>this.props.playVideoFunc(k.VideoPath)}/>
+                        playVideoFunc={()=>this.props.playVideoFunc(config.mediaStorageDomain+k.VideoPath)}/>
                   </td>)}
                 </tr>)}
                 {this.loadCompleted?"":
@@ -87,7 +87,7 @@ export default class VideoWall extends React.Component{
         if(config.localDebug){
           return sampleVideos
         }
-        let videos=await $.get(config.serverUrl+`/api/getVideoList?start=${this.startVideoId}&count=${videoNumPerRequest}`);
+        let videos=await $.get(config.serverDomain+`/api/getVideoList?start=${this.startVideoId}&count=${videoNumPerRequest}`);
         if(videos.length==videoNumPerRequest){
           this.startVideoId=videos[videos.length-1].VideoId+1;
         }
