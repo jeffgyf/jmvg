@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -22,11 +24,15 @@ namespace Server.Controllers
         public ApiController(IConfiguration config)
         {
             sqlUsername = config["Database:Username"];
-            sqlPassword = config["Database:Password"];
-            if (sqlUsername == null || sqlPassword == null)
+            string sqlPwdSecret = config["Database:PasswordKvSecretName"];
+            string KvUri = config["KvUri"];
+            
+            if (sqlUsername == null || sqlPwdSecret == null || KvUri == null)
             {
-                throw new Exception("failed to read username or/and password from config");
+                throw new Exception("failed to read KvUri or/and Username or/and PasswordKvSecretName from config");
             }
+            var client = new SecretClient(new Uri(KvUri), new DefaultAzureCredential());
+            sqlPassword = client.GetSecret(sqlPwdSecret).Value.Value;
         }
 
         [Route("")]

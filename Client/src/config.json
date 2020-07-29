@@ -1,0 +1,5 @@
+{
+    "serverDomain":"https://jmvg.azurewebsites.net",
+    "localDebug": false,
+	"mediaStorageDomain":"https://jmvgmediastorage.z5.web.core.windows.net"
+}
