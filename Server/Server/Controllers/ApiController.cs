@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -63,14 +64,22 @@ namespace Server.Controllers
         [Produces("application/json")]
         public IActionResult Test()
         {
-            var sampleVideo = new Video
+            var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
+            var sb = new StringBuilder();
+            int idx = 286;
+            for (int i = 0; i < 1000; ++i)
             {
-                Title = "Become Wind",
-                CoverImg = $"https://{HttpContext.Request.Host}/image/SampleCover.png",
-                VideoPath = $"https://{HttpContext.Request.Host}/video/become_wind.mp4",
-                VideoId = 123
-            };
-            return Content(JsonConvert.SerializeObject(sampleVideo), "application/json");
+                sb.Clear();
+                sb.Append("INSERT INTO Video VALUES");
+                for (int j = 0; j < 1000; ++j)
+                {
+                    sb.Append($"({idx},'Dummy Video{idx-4}','/image/sampleCover.jpg','/video/sampleVideo.mp4','This is a sample video',NULL),");
+                    ++idx;
+                }
+                sb.Remove(sb.Length - 1, 1);
+                dbContext.Database.ExecuteSqlCommand(sb.ToString());
+            }
+            return Content("ok");
         }
     }
 }
