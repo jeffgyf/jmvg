@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
@@ -21,9 +22,13 @@ namespace Server.Controllers
     {
         private readonly string sqlUsername;
         private readonly string sqlPassword;
+        private ILogger logger;
 
-        public ApiController(IConfiguration config)
+        public ApiController(IConfiguration config, ILogger<ApiController> logger)
         {
+            this.logger = logger;
+            logger.LogInformation("ApiController initialized");
+
             sqlUsername = config["Database:Username"];
             string sqlPwdSecret = config["Database:PasswordKvSecretName"];
             string KvUri = config["KvUri"];
@@ -53,33 +58,92 @@ namespace Server.Controllers
             {
                 throw new Exception($"Random {failurePct}% failure");
             }
+
             var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
             var videos = dbContext.Videos.FromSqlRaw($"SELECT TOP({count}) * FROM [Video] WHERE VideoId >={start}");
 
             return Content(JsonConvert.SerializeObject(await videos.ToListAsync()), "application/json");
         }
 
+        [Route("api/getVideoListCpuIntensive")]
+        [HttpGet]
+        [Produces("application/json")]
+        public Task<IActionResult> GetVideoListCpuIntensive(int start, int count)
+        {
+            CpuIntensiveFunction(10);
+            return GetVideoList(start, count);
+        }
+
+        [Route("api/getVideoListHeavyMemory")]
+        [HttpGet]
+        [Produces("application/json")]
+        public Task<IActionResult> GetVideoListHeavyMemory(int start, int count)
+        {
+            WasteMemory(40);
+            return GetVideoList(start, count);
+        }
+
+        [Route("api/getVideoListHeavyMemoryAndCpu")]
+        [HttpGet]
+        [Produces("application/json")]
+        public Task<IActionResult> GetVideoListHeavyMemoryAndCpu(int start, int count)
+        {
+            WasteMemory(40);
+            CpuIntensiveFunction(10);
+            return GetVideoList(start, count);
+        }
+
         [Route("api/test")]
         [HttpGet]
         [Produces("application/json")]
-        public IActionResult Test()
+        public IActionResult Test(int n)
         {
-            var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
-            var sb = new StringBuilder();
-            int idx = 286;
-            for (int i = 0; i < 1000; ++i)
-            {
-                sb.Clear();
-                sb.Append("INSERT INTO Video VALUES");
-                for (int j = 0; j < 1000; ++j)
-                {
-                    sb.Append($"({idx},'Dummy Video{idx-4}','/image/sampleCover.jpg','/video/sampleVideo.mp4','This is a sample video',NULL),");
-                    ++idx;
-                }
-                sb.Remove(sb.Length - 1, 1);
-                dbContext.Database.ExecuteSqlCommand(sb.ToString());
-            }
+            Environment.Exit(-1);
+
             return Content("ok");
+        }
+
+        [Route("api/exit")]
+        [HttpGet]
+        [Produces("application/json")]
+        public IActionResult Exit()
+        {
+            Environment.Exit(-1);
+
+            return Content("ok");
+        }
+
+
+        private double CpuIntensiveFunction(int degree)
+        {
+            var rand = new Random();
+            double t = 1;
+            for (long i = 0; i < ((long)1) << (degree+20); ++i)
+            {
+                if (t > 1000000000)
+                {
+                    t *= rand.NextDouble();
+                }
+                else
+                {
+                    t /= rand.NextDouble();
+                }
+            }
+            return t;
+        }
+
+        private void WasteMemory(int n)
+        {
+            var list = new List<int[]>();
+            try
+            {
+                list.Add(new int[n * 256 * 1024]);
+                logger.LogInformation($"{n} MB memory allocated");
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"failed to allocate {n} MB memory");
+            }
         }
     }
 }
