@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,9 +17,21 @@ namespace Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration config)
         {
-            Configuration = configuration;
+            Configuration = config;
+
+            string sqlUsername = config["Database:Username"];
+            string sqlPwdSecret = config["Database:PasswordKvSecretName"];
+            string KvUri = config["KvUri"];
+
+            if (sqlUsername == null || sqlPwdSecret == null || KvUri == null)
+            {
+                throw new Exception("failed to read KvUri or/and Username or/and PasswordKvSecretName from config");
+            }
+            var client = new SecretClient(new Uri(KvUri), new DefaultAzureCredential());
+            string sqlPassword = client.GetSecret(sqlPwdSecret).Value.Value;
+            JmvgDbContext.Initialize(sqlUsername, sqlPassword);
         }
 
         public IConfiguration Configuration { get; }
@@ -35,6 +49,7 @@ namespace Server
                                       builder.WithOrigins("http://localhost:3000");
                                   });
             });
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

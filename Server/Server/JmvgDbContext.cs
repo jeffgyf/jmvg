@@ -10,13 +10,13 @@ namespace Server
 {
     public class JmvgDbContext:DbContext
     {
-        private string username;
-        private string password;
+        private static string username;
+        private static string password;
 
-        public JmvgDbContext(string username, string password)
+        public static void Initialize(string username, string password)
         {
-            this.username = username;
-            this.password = password;
+            JmvgDbContext.username = username;
+            JmvgDbContext.password = password;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

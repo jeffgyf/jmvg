@@ -20,25 +20,11 @@ namespace Server.Controllers
 {
     public class ApiController : Controller
     {
-        private readonly string sqlUsername;
-        private readonly string sqlPassword;
         private ILogger logger;
 
-        public ApiController(IConfiguration config, ILogger<ApiController> logger)
+        public ApiController(ILogger<ApiController> logger)
         {
             this.logger = logger;
-            logger.LogInformation("ApiController initialized");
-
-            sqlUsername = config["Database:Username"];
-            string sqlPwdSecret = config["Database:PasswordKvSecretName"];
-            string KvUri = config["KvUri"];
-            
-            if (sqlUsername == null || sqlPwdSecret == null || KvUri == null)
-            {
-                throw new Exception("failed to read KvUri or/and Username or/and PasswordKvSecretName from config");
-            }
-            var client = new SecretClient(new Uri(KvUri), new DefaultAzureCredential());
-            sqlPassword = client.GetSecret(sqlPwdSecret).Value.Value;
         }
 
         [Route("")]
@@ -59,7 +45,7 @@ namespace Server.Controllers
                 throw new Exception($"Random {failurePct}% failure");
             }
 
-            var dbContext = new JmvgDbContext(sqlUsername, sqlPassword);
+            var dbContext = new JmvgDbContext();
             var videos = dbContext.Videos.FromSqlRaw($"SELECT TOP({count}) * FROM [Video] WHERE VideoId >={start}");
 
             return Content(JsonConvert.SerializeObject(await videos.ToListAsync()), "application/json");
@@ -68,9 +54,18 @@ namespace Server.Controllers
         [Route("api/getVideoListCpuIntensive")]
         [HttpGet]
         [Produces("application/json")]
-        public Task<IActionResult> GetVideoListCpuIntensive(int start, int count)
+        public Task<IActionResult> GetVideoListCpuIntensive(int start, int count, int degree = 8)
         {
-            CpuIntensiveFunction(10);
+            CpuIntensiveFunction(degree);
+            return GetVideoList(start, count);
+        }
+
+        [Route("api/getVideoListSlow")]
+        [HttpGet]
+        [Produces("application/json")]
+        public Task<IActionResult> GetVideoListSlow(int start, int count, int timeCostInMin = 1)
+        {
+            Task.Delay(TimeSpan.FromMinutes(timeCostInMin)).Wait();
             return GetVideoList(start, count);
         }
 
@@ -83,13 +78,23 @@ namespace Server.Controllers
             return GetVideoList(start, count);
         }
 
+        [Route("api/getVideoListHeavyMemorySlow")]
+        [HttpGet]
+        [Produces("application/json")]
+        public Task<IActionResult> GetVideoListHeavyMemorySlow(int start, int count, int timeCostInMin = 1)
+        {
+            WasteMemory(40);
+            Task.Delay(TimeSpan.FromMinutes(timeCostInMin)).Wait();
+            return GetVideoList(start, count);
+        }
+
         [Route("api/getVideoListHeavyMemoryAndCpu")]
         [HttpGet]
         [Produces("application/json")]
-        public Task<IActionResult> GetVideoListHeavyMemoryAndCpu(int start, int count)
+        public Task<IActionResult> GetVideoListHeavyMemoryAndCpu(int start, int count, int degree = 8)
         {
-            WasteMemory(40);
-            CpuIntensiveFunction(10);
+            WasteMemory(300);
+            CpuIntensiveFunction(degree);
             return GetVideoList(start, count);
         }
 
@@ -138,7 +143,7 @@ namespace Server.Controllers
             try
             {
                 list.Add(new int[n * 256 * 1024]);
-                logger.LogInformation($"{n} MB memory allocated");
+                //logger.LogInformation($"{n} MB memory allocated");
             }
             catch (Exception e)
             {
