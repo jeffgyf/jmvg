@@ -20,9 +20,7 @@ namespace Server
             Logger.Initialize();
             if (slowStart)
             {
-                int timeToDelayInMin = 10;
-                Logger.TraceInformation($"Start slow start, delay for {timeToDelayInMin} mins");
-                Task.Delay(TimeSpan.FromMinutes(10)).Wait();
+                VerySlowStartUp(10);
             }
             Logger.TraceInformation($"Initialization done");
 
@@ -37,6 +35,12 @@ namespace Server
            CreateHostBuilder(args).Build().Run();
         }
 
+        private static void VerySlowStartUp(int timeToDelayInMin = 10)
+        {
+            Logger.TraceInformation($"Start slow start, delay for {timeToDelayInMin} mins");
+            Task.Delay(TimeSpan.FromMinutes(timeToDelayInMin)).Wait();
+        }
+
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -46,6 +50,10 @@ namespace Server
                         {
                             builder.AddApplicationInsights("4db899c8-043a-4a36-b28a-169e6024e0a7");
                         });
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    logging.AddEventSourceLogger();
                 });
     }
 }

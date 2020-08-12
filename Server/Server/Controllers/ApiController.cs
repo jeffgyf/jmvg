@@ -74,7 +74,7 @@ namespace Server.Controllers
         [Produces("application/json")]
         public Task<IActionResult> GetVideoListHeavyMemory(int start, int count)
         {
-            WasteMemory(40);
+            WasteMemory(100);
             return GetVideoList(start, count);
         }
 
@@ -83,7 +83,7 @@ namespace Server.Controllers
         [Produces("application/json")]
         public Task<IActionResult> GetVideoListHeavyMemorySlow(int start, int count, int timeCostInMin = 1)
         {
-            WasteMemory(40);
+            WasteMemory(100);
             Task.Delay(TimeSpan.FromMinutes(timeCostInMin)).Wait();
             return GetVideoList(start, count);
         }
@@ -93,7 +93,7 @@ namespace Server.Controllers
         [Produces("application/json")]
         public Task<IActionResult> GetVideoListHeavyMemoryAndCpu(int start, int count, int degree = 8)
         {
-            WasteMemory(300);
+            WasteMemory(800);
             CpuIntensiveFunction(degree);
             return GetVideoList(start, count);
         }
