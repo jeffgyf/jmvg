@@ -23,7 +23,7 @@ namespace Server
         private static TaskCompletionSource<string> promise = new TaskCompletionSource<string>();
         public static void Main(string[] args)
         {
-            bool slowStart = false && !Debugger.IsAttached;
+            bool slowStart = !Debugger.IsAttached;
 
             Logger.Initialize();
             if (slowStart)
