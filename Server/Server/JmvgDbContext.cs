@@ -33,5 +33,7 @@ namespace Server
         }
 
         public DbSet<Video> Videos { get; set; }
+
+        public DbSet<Instance> Instances { get; set; }
     }
 }

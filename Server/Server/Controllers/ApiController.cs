@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -31,7 +32,7 @@ namespace Server.Controllers
         [HttpGet]
         public IActionResult HomePage()
         {
-            return Redirect("index.html?route=videoPage");
+            return Redirect("api/ok");
         }
 
         [Route("api/getVideoList")]
@@ -74,7 +75,8 @@ namespace Server.Controllers
         [Produces("application/json")]
         public Task<IActionResult> GetVideoListHeavyMemory(int start, int count)
         {
-            WasteMemory(100);
+            var l = WasteMemory(100);
+            Task.Delay(TimeSpan.FromSeconds(10)).Wait();
             return GetVideoList(start, count);
         }
 
@@ -83,7 +85,7 @@ namespace Server.Controllers
         [Produces("application/json")]
         public Task<IActionResult> GetVideoListHeavyMemorySlow(int start, int count, int timeCostInMin = 1)
         {
-            WasteMemory(100);
+            WasteMemory(500);
             Task.Delay(TimeSpan.FromMinutes(timeCostInMin)).Wait();
             return GetVideoList(start, count);
         }
@@ -101,11 +103,87 @@ namespace Server.Controllers
         [Route("api/test")]
         [HttpGet]
         [Produces("application/json")]
-        public IActionResult Test(int n)
+        public IActionResult Test()
         {
-            Environment.Exit(-1);
+            Program.TryCrash(1, "test");
+            return Content("ok");
+        }
+
+        [Route("api/crashTest")]
+        [HttpGet]
+        [Produces("application/json")]
+        public IActionResult CrashTest()
+        {
+            Program.Crash("Crash Test api triggered");
 
             return Content("ok");
+        }
+
+        [Route("api/setCrashTask")]
+        [HttpGet]
+        [Produces("application/json")]
+        public IActionResult SetCrashTask(int? instanceNum = null)
+        {
+            double restartHour = 1;
+            new Timer(s =>
+            {
+                string msg = $"Try restarting server {Logger.InstanceName} after it runs for {restartHour:0.00} hrs";
+                if (instanceNum == null)
+                {
+                    logger.LogTrace(msg);
+                    Program.Crash(msg);
+                }
+                else
+                {
+                    TryCrash(instanceNum.Value, msg);
+                }
+                //Environment.FailFast($"Restarting server after it runs for {randomRestartHour:0.00} hrs", new Exception("Random Crash"));
+            }, null, TimeSpan.FromHours(restartHour), Timeout.InfiniteTimeSpan);
+            Program.Crash("Crash Test api triggered");
+
+            return Content("ok");
+        }
+
+
+        private void TryCrash(int instanceNum, string msg)
+        {
+            var dbContext = new JmvgDbContext();
+
+            while (true)
+            {
+                using (var trans = dbContext.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+                {
+                    try
+                    {
+                        int instanceCnt = dbContext.Instances.Count();
+                        logger.LogTrace($"{msg}, there are {instanceCnt} instances online");
+                        if (instanceCnt == instanceNum)
+                        {
+                            dbContext.Instances.Remove(new Instance { Id = Logger.InstanceName });
+                            dbContext.SaveChanges();
+                            trans.Commit();
+                            Program.Crash(msg);
+                        }
+                        else
+                        {
+                            logger.LogTrace($"No enough instances online, wait for 5 mins and retry");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "TryCrash failed");
+                    }
+                }
+                //Task.Delay(TimeSpan.FromMinutes(5)).Wait();
+            }
+        }
+
+        [Route("api/stackOverflowCrashTest")]
+        [HttpGet]
+        [Produces("application/json")]
+        public IActionResult StackOverFlowCrashTest()
+        {
+            return StackOverFlowCrashTest();
         }
 
         [Route("api/exit")]
@@ -118,6 +196,20 @@ namespace Server.Controllers
             return Content("ok");
         }
 
+        [Route("api/ok")]
+        [HttpGet]
+        public IActionResult Ok()
+        {
+            return Content("ok");
+        }
+
+        [Route("api/getInstanceId")]
+        [HttpGet]
+        [Produces("text/plain")]
+        public IActionResult GetInstanceId()
+        {
+            return Content(Logger.InstanceName.ToString());
+        }
 
         private double CpuIntensiveFunction(int degree)
         {
@@ -137,13 +229,14 @@ namespace Server.Controllers
             return t;
         }
 
-        private void WasteMemory(int n)
+        private List<int[]> WasteMemory(int n)
         {
             var list = new List<int[]>();
             try
             {
                 list.Add(new int[n * 256 * 1024]);
                 //logger.LogInformation($"{n} MB memory allocated");
+                return list;
             }
             catch (Exception e)
             {

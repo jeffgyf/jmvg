@@ -32,6 +32,17 @@ namespace Server
             var client = new SecretClient(new Uri(KvUri), new DefaultAzureCredential());
             string sqlPassword = client.GetSecret(sqlPwdSecret).Value.Value;
             JmvgDbContext.Initialize(sqlUsername, sqlPassword);
+
+            try
+            {
+                var dbContext = new JmvgDbContext();
+                dbContext.Instances.Add(new Models.Instance { Id = Logger.InstanceName });
+                dbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                
+            }
         }
 
         public IConfiguration Configuration { get; }

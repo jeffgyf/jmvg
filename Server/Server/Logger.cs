@@ -16,8 +16,11 @@ namespace Server
             var config = TelemetryConfiguration.CreateDefault();
             config.InstrumentationKey = "4db899c8-043a-4a36-b28a-169e6024e0a7";
             telemetryClient = new TelemetryClient(config);
-            telemetryClient.Context.Cloud.RoleInstance = "JmvgBackend";
+            telemetryClient.Context.Cloud.RoleInstance = Environment.MachineName;
+            InstanceName = Environment.MachineName;
         }
+
+        public static string InstanceName;
 
         public static void TraceInformation(string s)
         {
