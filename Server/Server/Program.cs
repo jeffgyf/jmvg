@@ -18,6 +18,7 @@ namespace Server
     {
         public static void Crash(string msg)
         {
+            Logger.Flush();
             promise.TrySetResult(msg);
         }
         private static TaskCompletionSource<string> promise = new TaskCompletionSource<string>();
@@ -31,7 +32,7 @@ namespace Server
                 VerySlowStartUp(15);
             }
             Logger.TraceInformation($"Instance {Logger.InstanceName} initialization done");
-            SetCrashTask(restartHour: 1, instanceNum: 2);
+            var timer = SetCrashTask(restartHour: 1, instanceNum: 2);
 
             var hostTask = CreateHostBuilder(args).Build().RunAsync();
             string msg = promise.Task.Result;
@@ -93,9 +94,9 @@ namespace Server
             }
         }
 
-        public static void SetCrashTask(double restartHour = 1, int? instanceNum = null)
+        public static Timer SetCrashTask(double restartHour = 1, int? instanceNum = null)
         {
-            new Timer(s =>
+            return new Timer(s =>
             {
                 string msg = $"Try restarting server {Logger.InstanceName} after it runs for {restartHour:0.00} hrs";
                 if (instanceNum == null)
